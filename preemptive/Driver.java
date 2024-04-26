@@ -275,8 +275,8 @@ public class Driver {
 			
 			lastProcess=currentProcess.processId;
 			order+=currentProcess.processId+",";
-			//}
-		}//end if length 0
+			
+		}
 
 
 
