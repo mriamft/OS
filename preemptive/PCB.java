@@ -3,7 +3,7 @@ package os;
 public class PCB {
 	
 String processId;
-int priority, arrival, burst, start, termination, turnAround, waiting, response, rem;
+int priority, arrival, burst, start, termination, turnAround, waiting, response, remainingBurst;
 boolean isInQueue;
 int lastTimeMovedInQueue;
 
@@ -16,7 +16,7 @@ public PCB(String processId, int priority, int arrival, int burst) {
 	this.priority = priority;
 	this.arrival = arrival;
 	this.burst = burst;
-	rem=burst;
+	remainingBurst=burst;
 	isInQueue=false;
 	lastTimeMovedInQueue=0;
 }//end const

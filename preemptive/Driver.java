@@ -40,142 +40,15 @@ public class Driver {
 			choice=input.nextInt();
 
 			if(choice==1) {
-				lastProcess="";
-				System.out.println("Enter number of processes");
-				int numOfProcesses=input.nextInt();
-				allProccesses=new PCB[numOfProcesses];
-
-
-				q1=null;
-				q1Size=0;
-
-				q2=null;
-				q2Size=0;
-				q2CurrentExecution=-1;
-
-				currentTime=0;
-
-				order="";
-
-
-
-				if(numOfProcesses>0)
-					for(int i=1 ; i<=numOfProcesses;i++) {
-						int pri;
-						do {
-							System.out.println("P"+i+")Enter priority, 1 or 2");
-							pri=input.nextInt();
-						}//end do
-						while(pri!=1 && pri!=2);
-
-						System.out.println("P"+i+")Enter Arrival time");
-						int arrival=input.nextInt();
-
-						System.out.println("P"+i+")Enter cpu burst");
-						int burst=input.nextInt();
-
-
-						PCB p = new PCB(("P"+i),pri,arrival,burst);
-
-						allProccesses[i-1]=p;
-
-
-					}//end for
-
-				Arrays.sort(allProccesses, (a, b) -> a.arrival - b.arrival);
-
-				q1=new PCB[allProccesses.length];
-				q2=new PCB[allProccesses.length];
-
-				while(true) {
-
-
-
-					addToQ();
-					
-					
-
-					if(q1Size!=0) {
-
-						executeQ1();continue;
-					}//if size=0
-
-					if(q2Size!=0) {
-
-						executeQ2();continue;
-					}//if size=0
-
-
-					if(allDone())
-						break;
-					
-					else {
-
-						currentTime++;
-					}
-
-
-				}//end while true
-
+				
+				startNew();
 
 			}//end choice 1
 
 			if(choice==2) {
 				
-				String output="";
+				output();
 				
-				
-				
-				if(allProccesses==null)
-					System.out.println("\nSystem is empty\n");
-				else {
-					
-					
-					output+="\n\n["+order.replaceAll(",$","")+"]\n----------\n";
-
-
-					
-					int sumTT=0, sumWT=0, sumRT=0;
-
-					for(int i=0 ; i<allProccesses.length; i++) {
-						output+=allProccesses[i].toString()+"\n------------\n";
-						sumTT+=allProccesses[i].turnAround;
-						sumWT+=allProccesses[i].waiting;
-						sumRT+=allProccesses[i].response;
-						
-					}//end for
-					
-					
-					double numOfProcesses=allProccesses.length;
-					double avgTT=sumTT/numOfProcesses, avgWT=sumWT/numOfProcesses, avgRT=sumRT/numOfProcesses;
-					
-					output+="\nAverage Turnaround Time:"+avgTT+"\nAverage Waiting Time:"+avgWT+"\nAverage Response Time:"+avgRT+"\n\n";
-					
-					System.out.println(output);
-					
-					
-					
-					
-					
-
-				
-
-
-
-				try {
-					FileWriter fileWriter = new FileWriter("output.txt");
-					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.println(output);
-					
-					printWriter.close();
-					System.out.println("Output written to output.txt");
-				} catch (IOException e) {
-					System.out.println("An error occurred while writing to file.");
-					e.printStackTrace();
-				}
-
-				}//end else
-
 			}//end choice 2
 
 		}//end do
@@ -189,6 +62,146 @@ public class Driver {
 
 
 	}//end main
+	
+	
+	public static void startNew() {
+		lastProcess="";
+		System.out.println("Enter number of processes");
+		int numOfProcesses=input.nextInt();
+		allProccesses=new PCB[numOfProcesses];
+
+
+		q1=null;
+		q1Size=0;
+
+		q2=null;
+		q2Size=0;
+		q2CurrentExecution=-1;
+
+		currentTime=0;
+
+		order="";
+
+
+
+		if(numOfProcesses>0)
+			for(int i=1 ; i<=numOfProcesses;i++) {
+				int pri;
+				do {
+					System.out.println("P"+i+")Enter priority, 1 or 2");
+					pri=input.nextInt();
+				}//end do
+				while(pri!=1 && pri!=2);
+
+				System.out.println("P"+i+")Enter Arrival time");
+				int arrival=input.nextInt();
+
+				System.out.println("P"+i+")Enter cpu burst");
+				int burst=input.nextInt();
+
+
+				PCB p = new PCB(("P"+i),pri,arrival,burst);
+
+				allProccesses[i-1]=p;
+
+
+			}//end for
+
+		Arrays.sort(allProccesses, (a, b) -> a.arrival - b.arrival);
+
+		q1=new PCB[allProccesses.length];
+		q2=new PCB[allProccesses.length];
+
+		while(true) {
+
+
+
+			addToQ();
+			
+			
+
+			if(q1Size!=0) {
+
+				executeQ1();continue;
+			}//if size=0
+
+			if(q2Size!=0) {
+
+				executeQ2();continue;
+			}//if size=0
+
+
+			if(allDone())
+				break;
+			
+			else {
+
+				currentTime++;
+			}
+
+
+		}//end while true
+
+	}//end start new
+	
+	public static void output() {
+		
+		String output="";
+		
+		
+		
+		if(allProccesses==null || allProccesses.length==0)
+			System.out.println("\nSystem is empty\n");
+		else {
+			
+			
+			output+="\n\n["+order.replaceAll(",$","")+"]\n----------\n";
+
+
+			
+			int sumTT=0, sumWT=0, sumRT=0;
+
+			for(int i=0 ; i<allProccesses.length; i++) {
+				output+=allProccesses[i].toString()+"\n------------\n";
+				sumTT+=allProccesses[i].turnAround;
+				sumWT+=allProccesses[i].waiting;
+				sumRT+=allProccesses[i].response;
+				
+			}//end for
+			
+			
+			double numOfProcesses=allProccesses.length;
+			double avgTT=sumTT/numOfProcesses, avgWT=sumWT/numOfProcesses, avgRT=sumRT/numOfProcesses;
+			
+			output+="\nAverage Turnaround Time:"+avgTT+"\nAverage Waiting Time:"+avgWT+"\nAverage Response Time:"+avgRT+"\n\n";
+			
+			System.out.println(output);
+			
+			
+			
+			
+			
+
+		
+
+
+
+		try {
+			FileWriter fileWriter = new FileWriter("output.txt");
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.println(output);
+			
+			printWriter.close();
+			System.out.println("Output written to output.txt\n");
+		} catch (IOException e) {
+			System.out.println("An error occurred while writing to file.");
+			e.printStackTrace();
+		}
+
+		}//end else
+
+	
+	}//end output
 
 	
 
@@ -250,7 +263,7 @@ public class Driver {
 			nextProcess=q1[1];
 
 			
-			if((currentProcess.lastTimeMovedInQueue >=nextProcess.lastTimeMovedInQueue) && (nextProcess.rem == nextProcess.burst) && (currentProcess.rem != currentProcess.burst)) {
+			if((currentProcess.lastTimeMovedInQueue >=nextProcess.lastTimeMovedInQueue) && (nextProcess.remainingBurst == nextProcess.burst) && (currentProcess.remainingBurst != currentProcess.burst)) {
 				q1[0]=nextProcess;
 				q1[1]=currentProcess;
 				currentProcess=nextProcess;
@@ -275,34 +288,34 @@ public class Driver {
 			
 			lastProcess=currentProcess.processId;
 			order+=currentProcess.processId+",";
-			
+			//}
 		}
 
 
 
 
 		//if it is the first time for the process
-		if(currentProcess.burst==currentProcess.rem) {
+		if(currentProcess.burst==currentProcess.remainingBurst) {
 			currentProcess.start=currentTime;
 
 		}//end if burst
 
 
-		if(currentProcess.rem<=QT) {
+		if(currentProcess.remainingBurst<=QT) {
 
-			currentTime+=currentProcess.rem;
+			currentTime+=currentProcess.remainingBurst;
 			addToQ();
 			currentProcess.termination=currentTime;
 			currentProcess.turnAround=currentProcess.termination-currentProcess.arrival;
 			currentProcess.waiting=currentProcess.turnAround-currentProcess.burst;
-			currentProcess.rem=0;
+			currentProcess.remainingBurst=0;
 			currentProcess.response=currentProcess.start-currentProcess.arrival;
 			remove(q1, 1,0);
 
 		}//end if rem<QT
 
 		else {
-			currentProcess.rem=currentProcess.rem-QT;
+			currentProcess.remainingBurst=currentProcess.remainingBurst-QT;
 			currentTime+=QT;
 			addToQ();
 			currentProcess.lastTimeMovedInQueue=currentTime;
@@ -345,7 +358,7 @@ public class Driver {
 			lastProcess=current.processId;
 			order+=current.processId+",";
 			
-		}//end if length 0
+		}
 	
 
 	
@@ -353,7 +366,7 @@ public class Driver {
 	
 	
 		//if first time being executed
-		if(current.rem==current.burst) {
+		if(current.remainingBurst==current.burst) {
 			current.start=currentTime;
 	
 		}//end if first time
@@ -365,7 +378,7 @@ public class Driver {
 	
 	
 	
-		if(current.rem==1) {
+		if(current.remainingBurst==1) {
 	
 			current.termination=currentTime;
 			current.turnAround=current.termination-current.arrival;
@@ -378,7 +391,7 @@ public class Driver {
 	
 		}//end if remains 1
 	
-		current.rem=current.rem-1;
+		current.remainingBurst=current.remainingBurst-1;
 	
 	
 		
@@ -485,7 +498,7 @@ public class Driver {
 		int shortest=0;
 		int i;
 		for(i=1 ; i<q2Size; i++) {
-			if(q[i].rem<q[shortest].rem)
+			if(q[i].remainingBurst<q[shortest].remainingBurst)
 				shortest=i;
 		}
 
